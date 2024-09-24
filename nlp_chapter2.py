@@ -101,6 +101,7 @@ def tokenize(batch):
     _tokenized = tokenizer(batch["text"].values.tolist(), padding=True, truncation=True)
     _tokenized["text"] = batch["text"]
     _tokenized["label"] = batch["label"]
+    _tokenized["labels"] = batch["label"]
     return _tokenized
 
 print(tokenize(emotions["train"][:2]))
@@ -246,6 +247,9 @@ trainer = Trainer(model=model, args=training_args,
                   train_dataset=emotions_encoded["train"],
                   eval_dataset=emotions_encoded["validation"],
                   tokenizer=tokenizer)
+
+print(f' train column names: {emotions_encoded["train"].column_names}')
+print(f' validation column names: {emotions_encoded["validation"].column_names}')
 
 trainer.train() # ValueError: The model did not return a loss from the inputs, only the following keys: logits. For reference, the inputs it received are input_ids,attention_mask
 preds_output = trainer.predict(emotions_encoded["validation"])
